@@ -153,38 +153,26 @@ while j<=J
 				otherwise
 					f2=false;
 			end
-			MD=(2*obj1.ElectronSpin+1)*(2*obj1.NuclearSpin+1);
-			M=numel(obj1.Multiplet);
+			LD=obj1.NumLevels;
+			g=abs(g);
 			K=size(g,1);
 			if K==1
-				g=g*ones(MD);
-			elseif K~=MD*M
+				g=g*ones(LD);
+			elseif K~=LD
 				error('FluxQon:Construct:Interaction:InvalidCase',...
 					['The matrix dimension of the ion''s %s is expected to be ',...
 						'equal to the number of the ion''s energy levels.'],s);
 			end
 			E1=obj1.Energy;
 			E2=obj2.Energy;
-			for Mi=1:M
-				for Mj=1:M
-					for Ji=1:MD
-						Li=(Mi-1)*MD+Ji;
-						for Jj=1:MD
-							Lj=(Mj-1)*MD+Jj;
-							if Li==Lj
-								continue
-							end
-							K=abs(E1(Li)-E1(Lj));
-							if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
-								if Li<Lj% emission
-									H=H+g(Li,Lj)*Operator.kron(d,...
-										n1,obj1.Transition(Li,Lj),n2,obj2.Creation);
-								else% absorption
-									H=H+g(Li,Lj)*Operator.kron(d,...
-										n1,obj1.Transition(Li,Lj),n2,obj2.Annihilation);
-								end
-							end
-						end
+			for Li=1:LD
+				for Lj=(Li+1):LD
+					K=abs(E1(Li)-E1(Lj));
+					if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+						H=H+g(Li,Lj)*(Operator.kron(d,n1,obj1.Transition(Li,Lj)) ...
+										 +Operator.kron(d,n1,obj1.Transition(Lj,Li))) ...
+										*(Operator.kron(d,n2,obj2.Annihilation) ...
+										 +Operator.kron(d,n2,obj2.Creation));
 					end
 				end
 			end
@@ -202,8 +190,10 @@ while j<=J
 								['The interaction strength between the qubit ',...
 									'and the photon could not be determined.']);
 						end
-						H=H+g*Operator.kron(d,n1,obj1.Annihilation,n2,obj2.Creation);
-						H=H+g*Operator.kron(d,n1,obj1.Creation,n2,obj2.Annihilation);
+						H=H+abs(g)*(Operator.kron(d,n1,obj1.Annihilation) ...
+									  +Operator.kron(d,n1,obj1.Creation)) ...
+									 *(Operator.kron(d,n2,obj2.Annihilation) ...
+									  +Operator.kron(d,n2,obj2.Creation));
 					end
 				otherwise
 					f2=false;
