@@ -61,6 +61,7 @@ end
 
 properties (Dependent=true, SetAccess=private)
 	Frequency
+	NumLevels
 	HilbertDimension
 end
 
@@ -287,8 +288,12 @@ methods
 		x=obj.Energy/Constant.ReducedPlanck;
 	end
 
-	function x=get.HilbertDimension(obj)
+	function x=get.NumLevels(obj)
 		x=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1)*numel(obj.Multiplet);
+	end
+	
+	function x=get.HilbertDimension(obj)
+		x=obj.NumLevels;
 		if obj.NumIons>1
 			x=obj.FockDimension^(x-1);
 		end

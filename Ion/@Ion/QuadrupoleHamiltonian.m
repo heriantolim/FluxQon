@@ -49,7 +49,7 @@ end
 
 MV=obj.Multiplet;
 M=numel(MV);
-LD=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1)*M;
+LD=obj.NumLevels;
 T=obj.QuadrupoleTensor;
 
 if all(T(:)==0)

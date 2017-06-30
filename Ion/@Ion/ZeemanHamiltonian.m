@@ -71,7 +71,7 @@ end
 
 MV=obj.Multiplet;
 M=numel(MV);
-LD=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1)*M;
+LD=obj.NumLevels;
 T1=Constant.BohrMagneton*obj.ElectronZeemanTensor;
 T2=Constant.NuclearMagneton*obj.NuclearZeemanTensor;
 
