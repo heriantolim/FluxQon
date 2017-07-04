@@ -153,25 +153,27 @@ while j<=J
 				otherwise
 					f2=false;
 			end
-			LD=obj1.NumLevels;
-			g=abs(g);
-			K=size(g,1);
-			if K==1
-				g=g*ones(LD);
-			elseif K~=LD
-				error('FluxQon:Construct:Interaction:InvalidCase',...
-					['The matrix dimension of the ion''s %s is expected to be ',...
-						'equal to the number of the ion''s energy levels.'],s);
-			end
-			E1=obj1.Energy;
-			E2=obj2.Energy;
-			for Li=1:LD
-				for Lj=(Li+1):LD
-					K=abs(E1(Li)-E1(Lj));
-					if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
-						H=H+g(Li,Lj)*Operator.kron(d,...
-							n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
-							n2,obj2.Annihilation+obj2.Creation);
+			if f2
+				LD=obj1.NumLevels;
+				g=abs(g);
+				K=size(g,1);
+				if K==1
+					g=g*ones(LD);
+				elseif K~=LD
+					error('FluxQon:Construct:Interaction:InvalidCase',...
+						['The matrix dimension of the ion''s %s is expected to ',...
+							'be equal to the number of the ion''s energy levels.'],s);
+				end
+				E1=obj1.Energy;
+				E2=obj2.Energy;
+				for Li=1:LD
+					for Lj=(Li+1):LD
+						K=abs(E1(Li)-E1(Lj));
+						if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+							H=H+g(Li,Lj)*Operator.kron(d,...
+								n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
+								n2,obj2.Annihilation+obj2.Creation);
+						end
 					end
 				end
 			end
