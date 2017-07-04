@@ -20,7 +20,7 @@ function L=Lindblad(obj,varargin)
 % Copyright: Herianto Lim
 % http://heriantolim.com/
 % First created: 18/06/2017
-% Last modified: 19/06/2017
+% Last modified: 03/07/2017
 
 if nargin==1
 	d=obj.HilbertDimension;
@@ -53,8 +53,8 @@ if K>0
 	L=L+K*(N+1)*(kron(conj(C),C)-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
 end
 
-P=obj.PumpRate;
-if P>0 || K>0
+P=obj.IncoherentPumpRate;
+if P>0 || (K>0 && obj.Temperature>0)
 	C=Operator.kron(d,n,obj.Creation);
 	L=L+(P+K*N)*(kron(conj(C),C)-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
 end

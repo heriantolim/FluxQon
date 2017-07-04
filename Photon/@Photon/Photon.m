@@ -30,15 +30,19 @@ classdef Photon < handle
 properties
 	FockDimension=3;
 	Energy
+	PumpEnergy=0;
+	PumpPower=0;
 	Temperature=0;
 	DecayRate=0;
-	PumpRate=0;
+	IncoherentPumpRate=0;
 	ConfinementVolume=1e-12;
 end
 
 properties (Dependent=true)
 	Frequency% Angular frequency
 	Wavelength
+	PumpFrequency% Angular frequency
+	PumpRate
 	ElectricAmplitude
 	MagneticAmplitude
 end
@@ -107,6 +111,24 @@ methods
 		end
 	end
 	
+	function set.PumpEnergy(obj,x)
+		if isrealscalar(x) && x>=0
+			obj.PumpEnergy=x;
+		else
+			error('FluxQon:Photon:setPumpEnergy:InvalidInput',...
+				'Input to set the pump energy must be a positive real scalar.');
+		end
+	end
+	
+	function set.PumpPower(obj,x)
+		if isrealscalar(x) && x>=0
+			obj.PumpPower=x;
+		else
+			error('FluxQon:Photon:setPumpPower:InvalidInput',...
+				'Input to set the pump power must be a positive real scalar.');
+		end
+	end
+	
 	function set.Temperature(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.Temperature=x;
@@ -125,12 +147,13 @@ methods
 		end
 	end
 	
-	function set.PumpRate(obj,x)
+	function set.IncoherentPumpRate(obj,x)
 		if isrealscalar(x) && x>=0
-			obj.PumpRate=x;
+			obj.IncoherentPumpRate=x;
 		else
-			error('FluxQon:Photon:setPumpRate:InvalidInput',...
-				'Input to set the pump rate must be a positive real scalar.');
+			error('FluxQon:Photon:setIncoherentPumpRate:InvalidInput',...
+				['Input to set the incoherent pump rate must be ',...
+					'a positive real scalar.']);
 		end
 	end
 
@@ -171,6 +194,32 @@ methods
 			error('FluxQon:Photon:setWavelength:InvalidInput',...
 				['Input to set the wavelength must be a real scalar ',...
 					'between %g and %g.'],R(2),R(1));
+		end
+	end
+	
+	function x=get.PumpFrequency(obj)
+		x=obj.PumpEnergy/Constant.ReducedPlanck;
+	end
+	
+	function set.PumpFrequency(obj,x)
+		if isrealscalar(x) && x>=0
+			obj.PumpEnergy=Constant.ReducedPlanck*x;
+		else
+			error('FluxQon:setPumpFrequency:InvalidInput',...
+				'Input to set the pump frequency must be a positive real scalar.');
+		end
+	end
+	
+	function x=get.PumpRate(obj)
+		x=obj.PumpPower/Constant.ReducedPlanck;
+	end
+	
+	function set.PumpRate(obj,x)
+		if isrealscalar(x) && x>=0
+			obj.PumpPower=Constant.ReducedPlanck*x;
+		else
+			error('FluxQon:setPumpRate:InvalidInput',...
+				'Input to set the pump rate must be a positive real scalar.');
 		end
 	end
 

@@ -13,6 +13,11 @@ function H=Hamiltonian(obj)
 % First created: 17/06/2017
 % Last modified: 17/06/2017
 
-H=obj.Energy*obj.Number;
+if obj.PumpEnergy==0 || obj.PumpPower==0
+	H=obj.Energy*obj.Number;
+else
+	H=(obj.Energy-obj.PumpEnergy)*obj.Number ...
+		+obj.PumpPower*(obj.Annihilation+obj.Creation);
+end
 
 end
