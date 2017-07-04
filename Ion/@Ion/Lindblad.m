@@ -18,10 +18,10 @@ function L=Lindblad(obj,varargin)
 %
 %  L=obj.Lindblad(d,n)
 %  L=obj.Lindblad(basis,d,n)
-%    returns the Lindblad superoperator where the Hilbert
-%    space of the object is a subspace of a larger Hilbert space. The dimensions
-%    of all the subspaces is listed in the integer vector d. The subspace index
-%    for the object is given by the integer scalar n.
+%    returns the Lindblad superoperator where the Hilbert space of the object is
+%    a subspace of a larger Hilbert space. The dimensions of all the subspaces
+%    is listed in the integer vector d. The subspace index for the object is
+%    given by the integer scalar n.
 %
 % Requires package:
 %  - Common_v1.0.0+
@@ -35,7 +35,7 @@ function L=Lindblad(obj,varargin)
 % Copyright: Herianto Lim
 % http://heriantolim.com/
 % First created: 18/06/2017
-% Last modified: 21/06/2017
+% Last modified: 03/07/2017
 
 k=1;
 if k<nargin && ischar(varargin{k})
@@ -80,83 +80,95 @@ if all(y(:)==0)
 end
 
 M=numel(obj.Multiplet);
-K=size(y,1);
-if K==1
-	y=y*ones(M);
-elseif K~=M
-	error('FluxQon:Construct:Interaction:InvalidCase',...
-		['The matrix dimension of the decay rate is expected to be ',...
-			'equal to the number of multiplets.']);
-end
-
 MD=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1);
-K=obj.Temperature;
-if K==0
-	P=1;
-	M1=1;
-	MD1=1;
-else
-	P=obj.Energy;
-	P=boltzpdf(P-P(1),K);
-	P=P/sum(P);
-	M1=M;
-	MD1=MD;
-end
-
-if b=='S'
-	W=obj.Eigenstate;
-	for Mi=1:M1
-		for Mj=1:M
-			for Ji=1:MD1
-				Li=(Mi-1)*MD+Ji;
-				for Jj=1:MD
-					Lj=(Mj-1)*MD+Jj;
-					if Li==Lj
-						continue
-					end
-					C=Operator.kron(d,n,W(:,Li)*W(:,Lj)');
-					L=L+P(Li)*y(Mi,Mj)*(kron(conj(C),C) ...
-						-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
-				end
-			end
-		end
+LD=MD*M;
+if b=='F' && obj.NumIons>1
+	if isvector(y)
+		K=numel(y);
+		y=reshape(y,1,K);
+	else
+		y=y(1,:);
+		K=numel(y);
 	end
-elseif b=='E' || obj.NumIons==1
-	LD=MD*M;
-	for Mi=1:M1
-		for Mj=1:M
-			for Ji=1:MD1
-				Li=(Mi-1)*MD+Ji;
-				for Jj=1:MD
-					Lj=(Mj-1)*MD+Jj;
-					if Li==Lj
-						continue
-					end
-					C=zeros(LD);
-					C(Li,Lj)=1;
-					C=Operator.kron(d,n,C);
-					L=L+P(Li)*y(Mi,Mj)*(kron(conj(C),C) ...
-						-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
-				end
-			end
+	if K==1
+		y=y*ones(1,LD);
+	elseif K==M
+		y=kron(y,ones(1,MD));
+	elseif K~=LD
+		error('FluxQon:Ion:Lindblad:InvalidCase',...
+			['The vector dimension of the decay rate is expected to be ',...
+				'equal to the number of multiplets or energy levels.']);
+	end
+	
+	K=obj.Temperature;
+	if K==0
+		for Lj=2:LD
+			C=Operator.kron(d,n,obj.Annihilation(Lj));
+			L=L+y(Lj)*(kron(conj(C),C) ...
+				-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
+		end
+	else
+		N=obj.Energy;
+		N=boltzpdf(N-N(1),K);
+		N=y.*N./(1-N);
+		for Lj=2:LD
+			C=Operator.kron(d,n,obj.Annihilation(Lj));
+			L=L+(N(Lj)+y(Lj))*(kron(conj(C),C) ...
+				-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
+			C=Operator.kron(d,n,obj.Creation(Lj));
+			L=L+N(Lj)*(kron(conj(C),C) ...
+				-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
 		end
 	end
 else
-	A=obj.Annihilation;
-	B=obj.Creation(1:MD1*M1);
-	for Mi=1:M1
-		for Mj=1:M
-			for Ji=1:MD1
-				Li=(Mi-1)*MD+Ji;
-				for Jj=1:MD
-					Lj=(Mj-1)*MD+Jj;
-					if Li==Lj
-						continue
-					end
-					C=Operator.kron(d,n,B(:,:,Li)*A(:,:,Lj));
-					L=L+P(Li)*y(Mi,Mj)*(kron(conj(C),C) ...
-						-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
+	if isvector(y)
+		y=vec2symm(y);
+	end
+	K=size(y,1);
+	if K==1
+		y=y*ones(LD);
+	elseif K==M
+		y=kron(y,ones(MD));
+	elseif K~=LD
+		error('FluxQon:Ion:Lindblad:InvalidCase',...
+			['The matrix dimension of the decay rate is expected to be ',...
+				'equal to the number of multiplets or energy levels.']);
+	end
+	
+	K=obj.Temperature;
+	if K==0
+		P=1;
+		LD1=1;
+	else
+		P=obj.Energy;
+		P=boltzpdf(P-P(1),K);
+		P=P/sum(P);
+		LD1=LD;
+	end
+	
+	if b=='S'
+		W=obj.Eigenstate;
+		for Li=1:LD1
+			for Lj=1:LD
+				if Li==Lj
+					continue
 				end
+				C=Operator.kron(d,n,W(:,Li)*W(:,Lj)');
+				L=L+P(Li)*y(Li,Lj)*(kron(conj(C),C) ...
+					-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
+			end
+		end
+	else
+		for Li=1:LD1
+			for Lj=1:LD
+				if Li==Lj
+					continue
+				end
+				C=zeros(LD);
+				C(Li,Lj)=1;
+				C=Operator.kron(d,n,C);
+				L=L+P(Li)*y(Li,Lj)*(kron(conj(C),C) ...
+					-(kron(C.'*conj(C),eye(D))+kron(eye(D),C'*C))/2);
 			end
 		end
 	end

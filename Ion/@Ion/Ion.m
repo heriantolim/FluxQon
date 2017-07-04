@@ -442,18 +442,11 @@ methods (Access=protected)
 	end
 	
 	function x=setDecayRate(~,x)
-		ME=MException('FluxQon:Ion:setDecayRate:InvalidInput',...
+		assert(~isempty(x) && isrealmatrix(x) && all(x(:)>=0) ...
+				&& (isvector(x) || issymmetric(x)),...
+			'FluxQon:Ion:setDecayRate:InvalidInput',...
 			['Input to set the decay rate must be either ',...
 				'a positive real vector or a positive real symmetric matrix.']);
-		if isrealmatrix(x) && all(x(:)>=0)
-			if isvector(x)
-				x=vec2symm(x);
-			elseif isempty(x) || ~issymmetric(x)
-				throw(ME);
-			end
-		else
-			throw(ME);
-		end
 	end
 
 	T=rotateTensor(obj,T)
