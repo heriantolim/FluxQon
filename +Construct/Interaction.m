@@ -18,6 +18,9 @@ function [H,d]=Interaction(varargin)
 %    combination between two indices (Xi,Xj), which is used to mark that the
 %    interaction between obj_i and obj_j should be added into the Hamiltonian.
 %
+%  H=Construct.Interaction(...,'RWA') constructs the interaction Hamiltonian
+%    with the Rotating Wave Approximation.
+%
 % Optional outputs:
 %  - d : List of the Hilbert-subspace dimensions, returned as an integer vector.
 %        The product of the elements in d is equal to the dimension of H.
@@ -35,7 +38,7 @@ function [H,d]=Interaction(varargin)
 % Copyright: Herianto Lim
 % http://heriantolim.com/
 % First created: 09/06/2017
-% Last modified: 16/06/2017
+% Last modified: 01/08/2017
 
 %% Constants
 DEFINED_CLASS={'Qubit','Ion','Photon'};
@@ -47,6 +50,18 @@ d=1;
 K=nargin;
 if K<2
 	return
+end
+
+if isstringscalar(varargin{K})
+	if strcmpi(varargin{K},'RWA')
+		rwa=true;
+		K=K-1;
+	else
+		error('FluxQon:Construct:Interaction:InvalidInput',...
+			'Invalid option specifier.');
+	end
+else
+	rwa=false;
 end
 
 if isintegermatrix(varargin{K})
@@ -155,7 +170,6 @@ while j<=J
 			end
 			if f2
 				LD=obj1.NumLevels;
-				g=abs(g);
 				K=size(g,1);
 				if K==1
 					g=g*ones(LD);
@@ -166,13 +180,28 @@ while j<=J
 				end
 				E1=obj1.Energy;
 				E2=obj2.Energy;
-				for Li=1:LD
-					for Lj=(Li+1):LD
-						K=abs(E1(Li)-E1(Lj));
-						if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
-							H=H+g(Li,Lj)*Operator.kron(d,...
-								n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
-								n2,obj2.Annihilation+obj2.Creation);
+				if rwa
+					for Li=1:LD
+						for Lj=(Li+1):LD
+							K=abs(E1(Li)-E1(Lj));
+							if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+								H=H+g(Li,Lj)*Operator.kron(d,...
+										n1,obj1.Transition(Li,Lj),n2,obj2.Creation) ...
+									+g(Lj,Li)*Operator.kron(d,...
+										n1,obj1.Transition(Lj,Li),n2,obj2.Annihilation);
+							end
+						end
+					end
+				else
+					g=abs(g);
+					for Li=1:LD
+						for Lj=(Li+1):LD
+							K=abs(E1(Li)-E1(Lj));
+							if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+								H=H+g(Li,Lj)*Operator.kron(d,...
+									n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
+									n2,obj2.Annihilation+obj2.Creation);
+							end
 						end
 					end
 				end
@@ -191,9 +220,17 @@ while j<=J
 								['The interaction strength between the qubit ',...
 									'and the photon could not be determined.']);
 						end
-						H=H+abs(g)*Operator.kron(d,...
-							n1,obj1.Annihilation+obj1.Creation,...
-							n2,obj2.Annihilation+obj2.Creation);
+						if rwa
+							g=abs(g);
+							H=H+g*Operator.kron(d,...
+									n1,obj1.Annihilation,n2,obj2.Creation) ...
+								+g*Operator.kron(d,...
+									n1,obj1.Creation,n2,obj2.Annihilation);
+						else
+							H=H+abs(g)*Operator.kron(d,...
+								n1,obj1.Annihilation+obj1.Creation,...
+								n2,obj2.Annihilation+obj2.Creation);
+						end
 					end
 				otherwise
 					f2=false;

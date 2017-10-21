@@ -3,6 +3,8 @@ classdef Qubit < handle
 %
 % Constructor syntax:
 %  obj=Qubit() creates a Qubit object with default properties.
+%
+%  obj=Qubit(wz) creates a Qubit object with a frequency of wz.
 %  
 %  obj=Qubit(wz,wx) creates a Qubit object with a frequency of wz and a
 %    tunneling frequency of wx.
@@ -64,6 +66,8 @@ methods
 				warning('FluxQon:Qubit:IgnoredInput',...
 					'An extra input argument was provided, but is ignored.');
 			end
+		elseif nargin==1
+			obj.Frequency=varargin{1};
 		elseif nargin==2
 			obj.Frequency=varargin{1};
 			obj.TunnelingFrequency=varargin{2};

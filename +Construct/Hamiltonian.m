@@ -21,6 +21,9 @@ function [H,d]=Hamiltonian(varargin)
 %    between two indices (Xi,Xj), which is used to mark that the interaction
 %    between obj_i and obj_j should be added into the Hamiltonian.
 %
+%  H=Construct.Hamiltonian(...,'RWA') uses the RWA to construct the interaction
+%    Hamiltonian.
+%
 % Optional outputs:
 %  - d : List of the Hilbert-subspace dimensions, returned as an integer vector.
 %        The product of the elements in d is equal to the dimension of H.
@@ -37,13 +40,17 @@ function [H,d]=Hamiltonian(varargin)
 % Copyright: Herianto Lim
 % http://heriantolim.com/
 % First created: 16/06/2017
-% Last modified: 17/06/2017
+% Last modified: 01/08/2017
 
 H=0;
 d=1;
 K=nargin;
 if K==0
 	return
+end
+
+if isstringscalar(varargin{K})
+	K=K-1;
 end
 
 if isintegermatrix(varargin{K})

@@ -22,6 +22,9 @@ function [L,d]=Lindblad(varargin)
 %    that the interaction between obj_i and obj_j should be added into the
 %    calculation of L.
 %
+%  L=Construct.Lindblad(...,'RWA') uses the RWA to construct the interaction
+%    Hamiltonian.
+%
 % Optional outputs:
 %  - d : List of the Hilbert-subspace dimensions, returned as an integer vector.
 %        The product of the elements in d is equal to the square-root dimension
@@ -39,13 +42,17 @@ function [L,d]=Lindblad(varargin)
 % Copyright: Herianto Lim
 % http://heriantolim.com/
 % First created: 19/06/2017
-% Last modified: 19/06/2017
+% Last modified: 01/08/2017
 
+L=0;
 K=nargin;
 if K==0
-	L=0;
 	d=1;
 	return
+end
+
+if isstringscalar(varargin{K})
+	K=K-1;
 end
 
 if isintegermatrix(varargin{K})
@@ -82,15 +89,15 @@ if isempty(d)
 	d=Hilbert.dimension(varargin{k});
 end
 
-L=Construct.Interaction(varargin{:});
-if ~isscalar(L)
-	D=prod(d);
-	L=L/Constant.ReducedPlanck;
-	L=1i*(kron(L',eye(D))-kron(eye(D),L));
-end
-
 for j=1:J
 	L=L+varargin{k(j)}.Lindblad(d,n(j));
+end
+
+H=Construct.Interaction(varargin{:});
+if ~isscalar(H)
+	D=prod(d);
+	H=H/Constant.ReducedPlanck;
+	L=L+1i*(kron(H',eye(D))-kron(eye(D),H));
 end
 
 end
