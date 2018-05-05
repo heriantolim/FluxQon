@@ -1,10 +1,15 @@
 function memsize(varargin)
 %% Estimate the Minimum Memory Size
-%  memsize(obj1,obj2,...,objN) prints the memory size of the Hamiltonian and the
-%    Lindblad superoperator if constructed from obj1, obj2, ..., objN.
+%  memsize(d) displays the memory size of the Hamiltonian and the Lindblad
+%  superoperator given the Hilbert dimension d. d can be specified as an integer
+%  vector, in which case the Hilbert dimension is taken as the product of the
+%  elements in d.
+%
+%  memsize(obj1,obj2,...) obtains the Hilbert dimension(s) from the property of
+%  obj1, obj2, ...
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -12,8 +17,8 @@ function memsize(varargin)
 %
 % See also: Interaction, Lindblad.
 % 
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 19/06/2017
 % Last modified: 19/06/2017
 
@@ -21,12 +26,16 @@ if nargin==0
 	return
 end
 
-M=prod(Hilbert.dimension(varargin{:}))^2;
+if isintegervector(varargin{1})
+	M=prod(varargin{1});
+else
+	M=prod(Hilbert.dimension(varargin{:}))^2;
+end
 M(2)=M(1)^2;
 M=M*16;
 
 fprintf('Memory size for:\n');
-fprintf('  Hamiltonian  : %g Bytes\n',M(1));
-fprintf('  Lindblad     : %g Bytes\n',M(2));
+fprintf('  Hamiltonian  : %g bytes\n',M(1));
+fprintf('  Lindblad     : %g bytes\n',M(2));
 
 end
