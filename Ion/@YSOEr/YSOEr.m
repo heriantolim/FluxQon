@@ -1,23 +1,17 @@
-classdef YSOEr < Er
+classdef YSOEr < YSO & Er
 %% Y2SiO5:Er3+ in a Microwave Field
 %
 % Constructor syntax:
-%  obj=YSOEr()
-%  obj=YSOEr(0)
-%    creates an YSOEr object with a random isotope, site, and class. The isotope
-%    is randomed according to its natural abundance: 22.95% chance being odd,
-%    and the rest being even. The site and class have a 50:50 chance of being 1
-%    or 2.
+%  obj=YSOEr(), obj=YSOEr(0) creates an YSOEr object with a random isotope,
+%  site, and class. The isotope is randomed according to its natural abundance:
+%  22.95% chance being odd, and the rest being even. The site and class have a
+%  50:50 chance of being 1 or 2.
 %
-%  obj=Er(1)
-%  obj=Er('odd')
-%    creates an YSOEr object with an odd isotope, a random site and a random
-%    class.
+%  obj=Er(1), obj=Er('odd') creates an YSOEr object with an odd isotope, a
+%  random site and a random class.
 %
-%  obj=Er(2)
-%  obj=Er('even')
-%    creates an YSOEr object with an even isotope, a random site and a random
-%    class.
+%  obj=Er(2), obj=Er('even') creates an YSOEr object with an even isotope, a
+%  random site and a random class.
 %
 %  obj=YSOEr([a,b,c])
 %
@@ -32,12 +26,12 @@ classdef YSOEr < Er
 %
 %  obj=YSOEr(isotope,site,class,[a,b,c],B), where B can be scalar or vector.
 %
-%  obj=Er1(N,F,...), where N>2, creates an YSOEr object representing a
-%    collection of N YSOEr ions. F is the dimension of the annihilation-and-
-%    creation operators used to approximate the spin operators.
+%  obj=YSOEr(N,F,...), where N>2, creates an YSOEr object representing a
+%  collection of N YSOEr ions. F is the dimension of the annihilation-and-
+%  creation operators used to approximate the spin operators.
 %
-%  obj=YSOEr('PropertyName',PropertyValue,...) sets the properties of the
-%    object in Name-Value pair syntax.
+%  obj=YSOEr('PropertyName',PropertyValue,...) sets the properties of the object
+%  in Name-Value pair syntax.
 %
 % Input arguments:
 %  isotope : Er3+ isotope, specified as an integer of either 1 or 2. Can also
@@ -59,8 +53,7 @@ classdef YSOEr < Er
 %            equal to [0;0;B].
 %
 % Requires package:
-%  - Common_v1.0.0+
-%  - QuantMech_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -68,8 +61,8 @@ classdef YSOEr < Er
 %
 % See also: Ion, Er.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 05/12/2015
 % Last modified: 17/06/2017
 
@@ -95,7 +88,7 @@ methods
 				mp=findprop(obj,varargin{n});
 				if isempty(mp)
 					error('FluxQon:Ion:YSOEr:InvalidInput',...
-						'''%s'' is not a property of the Er class.',varargin{n});
+						'''%s'' is not a property of the YSOEr class.',varargin{n});
 				elseif strcmpi(mp.SetAccess,'public')
 					obj.(varargin{n})=varargin{n+1};
 				else
@@ -195,7 +188,7 @@ methods (Access=protected)
 				'Input to set the multiplet must be either 1, 2, or [1,2]');
 		end
 	end
-	
+
 	function x=getMultipletEnergy(obj,~)
 		MV=obj.Multiplet;
 		M=numel(MV);
@@ -211,12 +204,12 @@ methods (Access=protected)
 			end
 		end
 	end
-	
+
 	function x=setMultipletEnergy(obj,~) %#ok<STOUT>
 		error('FluxQon:Ion:YSOEr:setMultiPletEnergy:DeniedAccess',...
 			'The multiplet energy of %s objects is a constant.',class(obj));
 	end
-	
+
 	function x=getElectronZeemanTensor(obj,~)
 		switch obj.Site
 			case 1

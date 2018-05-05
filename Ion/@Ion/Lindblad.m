@@ -24,16 +24,15 @@ function L=Lindblad(obj,varargin)
 %    given by the integer scalar n.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 18/06/2017
 % Last modified: 03/07/2017
 
@@ -99,7 +98,7 @@ if b=='F' && obj.NumIons>1
 			['The vector dimension of the decay rate is expected to be ',...
 				'equal to the number of multiplets or energy levels.']);
 	end
-	
+
 	K=obj.Temperature;
 	if K==0
 		for Lj=2:LD
@@ -134,7 +133,7 @@ else
 			['The matrix dimension of the decay rate is expected to be ',...
 				'equal to the number of multiplets or energy levels.']);
 	end
-	
+
 	K=obj.Temperature;
 	if K==0
 		P=1;
@@ -145,7 +144,7 @@ else
 		P=P/sum(P);
 		LD1=LD;
 	end
-	
+
 	if b=='S'
 		W=obj.Eigenstate;
 		for Li=1:LD1

@@ -5,7 +5,7 @@ classdef Qubit < handle
 %  obj=Qubit() creates a Qubit object with default properties.
 %
 %  obj=Qubit(wz) creates a Qubit object with a frequency of wz.
-%  
+%
 %  obj=Qubit(wz,wx) creates a Qubit object with a frequency of wz and a
 %    tunneling frequency of wx.
 %
@@ -13,16 +13,15 @@ classdef Qubit < handle
 %    in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 18/12/2015
 % Last modified: 17/06/2017
 
@@ -76,7 +75,7 @@ methods
 				'Incorrect number of input arguments.');
 		end
 	end
-	
+
 	function x=get.Energy(obj)
 		x=obj.Energy;
 		if isempty(x)
@@ -84,7 +83,7 @@ methods
 			x=obj.Energy;
 		end
 	end
-	
+
 	function set.Energy(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.Energy=x;
@@ -93,7 +92,7 @@ methods
 				'Input to set the energy must be a positive real scalar.');
 		end
 	end
-	
+
 	function x=get.TunnelingEnergy(obj)
 		x=obj.TunnelingEnergy;
 		if isempty(x)
@@ -101,7 +100,7 @@ methods
 			x=obj.TunnelingEnergy;
 		end
 	end
-	
+
 	function set.TunnelingEnergy(obj,x)
 		if isrealscalar(x)
 			obj.TunnelingEnergy=x;
@@ -110,7 +109,7 @@ methods
 				'Input to set the tunneling energy must be a real scalar.');
 		end
 	end
-	
+
 	function set.Temperature(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.Temperature=x;
@@ -119,7 +118,7 @@ methods
 				'Input to set the temperature must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.DecayRate(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.DecayRate=x;
@@ -128,7 +127,7 @@ methods
 				'Input to set the decay rate must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.DephasingRate(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.DephasingRate=x;
@@ -137,11 +136,11 @@ methods
 				'Input to set the dephasing rate must be a positive real scalar.');
 		end
 	end
-	
+
 	function x=get.Frequency(obj)
 		x=obj.Energy/Constant.ReducedPlanck;
 	end
-	
+
 	function set.Frequency(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.Energy=Constant.ReducedPlanck*x;
@@ -150,11 +149,11 @@ methods
 				'Input to set the frequency must be a positive real scalar.');
 		end
 	end
-	
+
 	function x=get.TunnelingFrequency(obj)
 		x=obj.TunnelingEnergy/Constant.ReducedPlanck;
 	end
-	
+
 	function set.TunnelingFrequency(obj,x)
 		if isrealscalar(x)
 			obj.TunnelingEnergy=Constant.ReducedPlanck*x;
@@ -163,7 +162,7 @@ methods
 				'Input to set the tunneling frequency must be a real scalar.');
 		end
 	end
-	
+
 	H=Hamiltonian(obj)
 	L=Lindblad(obj,varargin)
 end
@@ -177,7 +176,7 @@ end
 methods (Access=protected)
 	function autoSetEnergy(obj) %#ok<MANU>
 	end
-	
+
 	function autoSetTunnelingEnergy(obj) %#ok<MANU>
 	end
 end

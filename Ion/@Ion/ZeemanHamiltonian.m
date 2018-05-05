@@ -22,9 +22,8 @@ function H=ZeemanHamiltonian(obj,varargin)
 %    basis.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -32,8 +31,8 @@ function H=ZeemanHamiltonian(obj,varargin)
 %
 % See also: HyperfineHamiltonian, QuadrupoleHamiltonian, Hamiltonian.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 17/06/2017
 % Last modified: 23/06/2017
 

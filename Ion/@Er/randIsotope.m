@@ -11,14 +11,14 @@ function x=randIsotope(varargin)
 %    approximately 22.95% values of 1 and 77.05% values of 2.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 06/12/2015
 % Last modified: 25/09/2016
 

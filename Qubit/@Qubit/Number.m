@@ -7,8 +7,8 @@ function N=Number()
 %
 % See also: Annihilation, Creation.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 26/06/2017
 % Last modified: 26/06/2017
 

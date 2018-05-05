@@ -2,7 +2,6 @@ function A=Annihilation()
 %% Qubit Annihilation Operator
 %
 % Requires package:
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -10,8 +9,8 @@ function A=Annihilation()
 %
 % See also: Creation, Number.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 26/06/2017
 % Last modified: 26/06/2017
 

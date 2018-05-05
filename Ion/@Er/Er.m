@@ -23,8 +23,7 @@ classdef Er < Ion
 %    Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
-%  - QuantMech_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -32,8 +31,8 @@ classdef Er < Ion
 %
 % See also: Ion.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 05/12/2015
 % Last modified: 17/06/2017
 
@@ -96,16 +95,16 @@ methods (Access=protected)
 			throw(ME);
 		end
 	end
-	
+
 	function x=getElectronSpin(~,~)
 		x=.5;
 	end
-	
+
 	function x=setElectronSpin(obj,~) %#ok<STOUT>
 		error('FluxQon:Ion:Er:setElectronSpin:DeniedAccess',...
 			'The electron spin of %s objects is a constant.',class(obj));
 	end
-	
+
 	function x=getNuclearSpin(obj,~)
 		switch obj.Isotope
 			case 1
@@ -114,16 +113,16 @@ methods (Access=protected)
 				x=0;
 		end
 	end
-	
+
 	function x=setNuclearSpin(obj,~) %#ok<STOUT>
 		error('FluxQon:Ion:Er:setNuclearSpin:DeniedAccess',...
 			'The nuclear spin of %s objects is a constant.',class(obj));
 	end
-	
+
 	function x=getNuclearZeemanTensor(~,~)
 		x=-0.1618;
 	end
-	
+
 	function x=setNuclearZeemanTensor(obj,~) %#ok<STOUT>
 		error('FluxQon:Ion:Er:setElectronSpin:DeniedAccess',...
 			'The nuclear Zeeman tensor of %s objects is a constant.',class(obj));

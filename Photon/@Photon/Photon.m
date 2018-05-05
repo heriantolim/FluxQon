@@ -14,16 +14,15 @@ classdef Photon < handle
 %    object in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 10/06/2017
 % Last modified: 15/06/2017
 
@@ -110,7 +109,7 @@ methods
 					'between %g and %g.'],R(1),R(2));
 		end
 	end
-	
+
 	function set.PumpEnergy(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.PumpEnergy=x;
@@ -119,7 +118,7 @@ methods
 				'Input to set the pump energy must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.PumpPower(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.PumpPower=x;
@@ -128,7 +127,7 @@ methods
 				'Input to set the pump power must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.Temperature(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.Temperature=x;
@@ -137,7 +136,7 @@ methods
 				'Input to set the temperature must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.DecayRate(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.DecayRate=x;
@@ -146,7 +145,7 @@ methods
 				'Input to set the decay rate must be a positive real scalar.');
 		end
 	end
-	
+
 	function set.IncoherentPumpRate(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.IncoherentPumpRate=x;
@@ -196,11 +195,11 @@ methods
 					'between %g and %g.'],R(2),R(1));
 		end
 	end
-	
+
 	function x=get.PumpFrequency(obj)
 		x=obj.PumpEnergy/Constant.ReducedPlanck;
 	end
-	
+
 	function set.PumpFrequency(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.PumpEnergy=Constant.ReducedPlanck*x;
@@ -209,11 +208,11 @@ methods
 				'Input to set the pump frequency must be a positive real scalar.');
 		end
 	end
-	
+
 	function x=get.PumpRate(obj)
 		x=obj.PumpPower/Constant.ReducedPlanck;
 	end
-	
+
 	function set.PumpRate(obj,x)
 		if isrealscalar(x) && x>=0
 			obj.PumpPower=Constant.ReducedPlanck*x;

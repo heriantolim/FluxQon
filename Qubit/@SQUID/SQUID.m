@@ -15,9 +15,8 @@ classdef SQUID < FluxQubit
 %    in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -25,8 +24,8 @@ classdef SQUID < FluxQubit
 %
 % See also: FluxQubit.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 13/12/2015
 % Last modified: 15/06/2017
 
@@ -39,7 +38,7 @@ methods
 end
 
 methods (Access=protected)
-	function autoSetExcitationEnergy(obj)
+	function autoSetEnergy(obj)
 		try
 			obj.solveTISE();
 		catch ME1

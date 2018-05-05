@@ -8,33 +8,38 @@ classdef Object3D < handle
 %
 %  obj=Object3D([x,y,z],[a,b,c]) additionally sets the Rotation of the object
 %    to a rotation by an angle a about the z-axis, then by an angle b about the
-%    y-axis, and finally by an angle c about the z-axis..
+%    y-axis, and finally by an angle c about the z-axis.
 %
 %  obj=Object3D('PropertyName',PropertyValue,...) sets the properties of the
 %    object in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
+%  - MATLAB R2018a
 %
 % See also: Object2D, rotate.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 06/12/2015
-% Last modified: 24/06/2017
+% Last modified: 02/04/2018
 
 properties
-	CoordSys=1;
+	CoordinateSystem=1;
 	Position=[0;0;0];
-	Rotation=eye(3);
+	Rotation=[0;0;0];
+end
+
+properties (Dependent=true)
+	RotationMatrix
 end
 
 properties (Constant=true, Access=protected)
-	CoordsSysList={'Catersian','Cylindrical','Spherical'};
+	CoordinateSystemList={'Catersian','Cylindrical','Spherical'};
 end
 
 methods
@@ -72,20 +77,20 @@ methods
 		end
 	end
 	
-	function set.CoordSys(obj,x)
-		L=obj.CoordSysList;
-		if isintegerscalar(x) && x>0 && x<numel(L)
-			obj.CoordSys=x;
+	function set.CoordinateSystem(obj,x)
+		L=obj.CoordinateSystemList;
+		if isintegerscalar(x) && x>0 && x<=numel(L)
+			obj.CoordinateSystem=x;
 		elseif isstringscalar(x)
 			x=strcmpi(x,L);
 			if any(x)
-				obj.CoordSys=find(x,1,'first');
+				obj.CoordinateSystem=find(x,1,'first');
 			else
-				error('FluxQon:Object3D:setCoordSys:UnrecognizedInput',...
+				error('FluxQon:Object3D:setCoordinateSystem:UnrecognizedInput',...
 					'The specified coordinate system is not recognized.');
 			end
 		else
-			error('FluxQon:Object3D:setCoordSys:InvalidInput',...
+			error('FluxQon:Object3D:setCoordinateSystem:InvalidInput',...
 				['Input to set the coordinate system must be either ',...
 					'an integer between 1 and %d, or a string scalar.'],numel(L));
 		end
@@ -93,33 +98,45 @@ methods
 
 	function set.Position(obj,x)
 		if isrealvector(x) && numel(x)==3
-			obj.Position=reshape(x,3,1);
+			obj.Position=x(:);
+			obj.afterSetPosition;
 		else
 			error('FluxQon:Object3D:setPosition:InvalidInput',...
 				'Input to set the position must be a real vector of length 3.');
 		end
-		obj.afterSetPosition;
 	end
 
 	function set.Rotation(obj,x)
-		try
-			x=obj.rotate(x);
-		catch ME1
-			if isempty(regexpi(ME1.identifier,...
-					':WrongNargin$|:InvalidInput$','once'))
-				rethrow(ME1);
-			else
-				ME=MException('FluxQon:Object3D:setRotation:InvalidInput',...
-					'Input to set the rotation failed validation.');
-				ME=addCause(ME,ME1);
-				throw(ME);
-			end
+		if isrealvector(x) && numel(x)==3
+			obj.Rotation=mod(x(:),2*pi);
+			obj.afterSetRotation;
+		else
+			error('FluxQon:Object3D:setRotation:InvalidInput',...
+				'Input to set the position must be a real vector of length 3.');
 		end
-		obj.Rotation=x;
-		obj.afterSetRotation;
 	end
 	
-	R=rotate(obj,varargin)
+	function R=get.RotationMatrix(obj)
+		a=obj.Rotation;
+		if all(a==0)
+			R=eye(3);
+		else
+			switch obj.CoordinateSystem
+				case 1% Catersian
+					c=cos(a);
+					s=sin(a);
+					R=[c(3),-s(3),0;s(3),c(3),0;0,0,1] ...
+						*[c(2),0,s(2);0,1,0;-s(2),0,c(2)] ...
+						*[c(1),-s(1),0;s(1),c(1),0;0,0,1];
+				case 2% Cylindrical
+					error('FluxQon:Object3D:getRotationMatrix:IncompleteCode',...
+						'Incomplete code.');
+				case 3% Spherical
+					error('FluxQon:Object3D:getRotationMatrix:IncompleteCode',...
+						'Incomplete code.');
+			end
+		end
+	end
 end
 
 methods (Access=protected)

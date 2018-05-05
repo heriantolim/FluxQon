@@ -2,9 +2,8 @@ classdef SquareSQUID < Square & SQUID
 %% Square SQUID Qubit
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -12,8 +11,8 @@ classdef SquareSQUID < Square & SQUID
 %
 % See also: Square, SQUID.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 15/06/2017
 % Last modified: 15/06/2017
 

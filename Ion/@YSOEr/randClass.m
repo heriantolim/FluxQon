@@ -11,7 +11,7 @@ function x=randClass(varargin)
 %    of 1 and 50% values of 2.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -19,8 +19,8 @@ function x=randClass(varargin)
 %
 % See also: randSite.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 06/12/2015
 % Last modified: 25/09/2016
 

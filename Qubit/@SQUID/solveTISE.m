@@ -16,13 +16,13 @@ function [E,W,dX]=solveTISE(obj,varargin)
 %  - dX : Infinitesimal length X.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 13/12/2015
 % Last modified: 15/07/2016
 

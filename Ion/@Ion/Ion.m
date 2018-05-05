@@ -9,13 +9,13 @@ classdef Ion < handle & Object3D
 %  obj=Ion(S,I) additionally sets the nuclear spin to I.
 %
 %  obj=Ion(S,gS,I,gI) additionally sets the electron (nuclear) Zeeman tensor
-%    to gS (gI).
+%  to gS (gI).
 %
 %  obj=Ion('PropertyName',PropertyValue,...) sets the properties of the object
-%    in Name-Value pair syntax.
+%  in Name-Value pair syntax.
 %
 % Properties:
-%  - 
+%  -
 %  -
 %  - RoundRelTol : Relative tolerance for rounding up, specified as a positive
 %                  real scalar that is less than 1. This tolerance is used in
@@ -23,16 +23,15 @@ classdef Ion < handle & Object3D
 %					    non-Hermitian. Set to 0 to disable the rounding.
 %
 % Requires package:
-%  - Common_v1.0.0+
-%  - PhysConst_v1.0.0+
-%  - QuantMech_v1.0.0+
+%  - MatCommon_v1.0.0+
+%  - PhysConst_v1.0.0+=
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 15/12/2015
 % Last modified: 17/06/2017
 
@@ -240,7 +239,7 @@ methods
 	function set.QuadrupoleTensor(obj,x)
 		obj.QuadrupoleTensor=setQuadrupoleTensor(obj,x);
 	end
-	
+
 	function x=get.CouplingStrength(obj)
 		x=obj.CouplingStrength;
 		x=getCouplingStrength(obj,x);
@@ -258,7 +257,7 @@ methods
 	function set.LineStrength(obj,x)
 		obj.LineStrength=setLineStrength(obj,x);
 	end
-	
+
 	function x=get.DecayRate(obj)
 		x=obj.DecayRate;
 		x=getDecayRate(obj,x);
@@ -291,7 +290,7 @@ methods
 	function x=get.NumLevels(obj)
 		x=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1)*numel(obj.Multiplet);
 	end
-	
+
 	function x=get.HilbertDimension(obj)
 		x=obj.NumLevels;
 		if obj.NumIons>1
@@ -411,10 +410,10 @@ methods (Access=protected)
 			x=0;
 		end
 	end
-	
+
 	function x=getCouplingStrength(~,x)
 	end
-	
+
 	function x=setCouplingStrength(~,x)
 		if iscomplexvector(x)
 			x=vec2trlherm(x);
@@ -437,10 +436,10 @@ methods (Access=protected)
 					'a complex vector or a hermitian matrix.']);
 		end
 	end
-	
+
 	function x=getDecayRate(~,x)
 	end
-	
+
 	function x=setDecayRate(~,x)
 		assert(~isempty(x) && isrealmatrix(x) && all(x(:)>=0) ...
 				&& (isvector(x) || issymmetric(x)),...

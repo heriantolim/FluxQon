@@ -17,24 +17,24 @@ function [E,W,dX,dY]=solveTISE(obj,varargin)
 %  - dY : Infinitesimal length Y.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 13/07/2016
 % Last modified: 15/07/2016
 
 % Retrieve required quantities
 EJ=obj.JosephsonEnergy;
 ECp=obj.CoulombPlus;
-assert(~isempty(EJ) && ~isempty(ECp),...
+ECm=obj.CoulombMinus;
+assert(~isempty(EJ) && ~isempty(ECp) && ~isempty(ECm),...
 	'FluxQon:Sq3JJ:solveTISE:MissingData',...
 	['Please set the Coulomb and Josephson energies, ',...
 		'prior to calling this method.']);
-ECm=obj.CoulombMinus;
 
 % inputs validation
 if nargin==1

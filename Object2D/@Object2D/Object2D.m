@@ -13,27 +13,32 @@ classdef Object2D < handle
 %    object in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
 %  - MATLAB R2017a
+%  - MATLAB R2018a
 %
 % See also: Object3D, rotate.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 15/06/2017
-% Last modified: 24/06/2017
+% Last modified: 02/04/2018
 
 properties
-	CoordSys=1;
+	CoordinateSystem=1;
 	Position=[0;0];
-	Rotation=eye(2);
+	Rotation=0;
+end
+
+properties (Dependent=true)
+	RotationMatrix
 end
 
 properties (Constant=true, Access=protected)
-	CoordsSysList={'Catersian','Polar'};
+	CoordinateSystemList={'Catersian','Polar'};
 end
 
 methods
@@ -71,20 +76,20 @@ methods
 		end
 	end
 	
-	function set.CoordSys(obj,x)
-		L=obj.CoordSysList;
-		if isintegerscalar(x) && x>0 && x<numel(L)
-			obj.CoordSys=x;
+	function set.CoordinateSystem(obj,x)
+		L=obj.CoordinateSystemList;
+		if isintegerscalar(x) && x>0 && x<=numel(L)
+			obj.CoordinateSystem=x;
 		elseif isstringscalar(x)
 			x=strcmpi(x,L);
 			if any(x)
-				obj.CoordSys=find(x,1,'first');
+				obj.CoordinateSystem=find(x,1,'first');
 			else
-				error('FluxQon:Object2D:setCoordSys:UnrecognizedInput',...
+				error('FluxQon:Object2D:setCoordinateSystem:UnrecognizedInput',...
 					'The specified coordinate system is not recognized.');
 			end
 		else
-			error('FluxQon:Object2D:setCoordSys:InvalidInput',...
+			error('FluxQon:Object2D:setCoordinateSystem:InvalidInput',...
 				['Input to set the coordinate system must be either ',...
 					'an integer between 1 and %d, or a string scalar.'],numel(L));
 		end
@@ -92,33 +97,40 @@ methods
 
 	function set.Position(obj,x)
 		if isrealvector(x) && numel(x)==2
-			obj.Position=reshape(x,2,1);
+			obj.Position=x(:);
+			obj.afterSetPosition;
 		else
 			error('FluxQon:Object2D:setPosition:InvalidInput',...
 				'Input to set the position must be a real vector of length 2.');
 		end
-		obj.afterSetPosition;
 	end
 
 	function set.Rotation(obj,x)
-		try
-			x=obj.rotate(x);
-		catch ME1
-			if isempty(regexpi(ME1.identifier,...
-					':WrongNargin$|:InvalidInput$','once'))
-				rethrow(ME1);
-			else
-				ME=MException('FluxQon:Object2D:setRotation:InvalidInput',...
-					'Input to set the rotation failed validation.');
-				ME=addCause(ME,ME1);
-				throw(ME);
-			end
+		if isrealvector(x) && numel(x)==3
+			obj.Rotation=mod(x(:),2*pi);
+			obj.afterSetRotation;
+		else
+			error('FluxQon:Object3D:setRotation:InvalidInput',...
+				'Input to set the position must be a real vector of length 3.');
 		end
-		obj.Rotation=x;
-		obj.afterSetRotation;
 	end
 	
-	R=rotate(obj,a)
+	function R=get.RotationMatrix(obj)
+		a=obj.Rotation;
+		if a==0
+			R=eye(2);
+		else
+			switch obj.CoordinateSystem
+				case 1% Catersian
+					c=cos(a);
+					s=sin(a);
+					R=[c,-s;s,c];
+				case 2% Polar
+					error('FluxQon:Object2D:getRotationMatrix:IncompleteCode',...
+						'Incomplete code.');
+			end
+		end
+	end
 end
 
 methods (Access=protected)

@@ -33,8 +33,7 @@ function C=Creation(obj,varargin)
 %  [1] Z. Kurucz and K. Molmer, Phys. Rev. A 81, 1 (2010).
 %
 % Requires package:
-%  - Common_v1.0.0+
-%  - QuantMech_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -42,8 +41,8 @@ function C=Creation(obj,varargin)
 %
 % See also: Annihilation, Number, Transition.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 20/06/2017
 % Last modified: 23/06/2017
 
