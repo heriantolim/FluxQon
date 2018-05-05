@@ -15,7 +15,7 @@ classdef Cylinder < Object3D
 %    object in Name-Value pair syntax.
 %
 % Requires package:
-%  - Common_v1.0.0+
+%  - MatCommon_v1.0.0+
 %
 % Tested on:
 %  - MATLAB R2015b
@@ -23,8 +23,8 @@ classdef Cylinder < Object3D
 %
 % See also: Object3D.
 %
-% Copyright: Herianto Lim
-% http://heriantolim.com/
+% Copyright: Herianto Lim (http://heriantolim.com)
+% Licensing: GNU General Public License v3.0
 % First created: 15/06/2017
 % Last modified: 15/06/2017
 
@@ -47,7 +47,8 @@ methods
 				mp=findprop(obj,varargin{n});
 				if isempty(mp)
 					error('FluxQon:Object3D:Cylinder:InvalidInput',...
-						'''%s'' is not a property of the Cylinder class.',varargin{n});
+						'''%s'' is not a property of the Cylinder class.',...
+						varargin{n});
 				elseif strcmpi(mp.SetAccess,'public')
 					obj.(varargin{n})=varargin{n+1};
 				else
@@ -97,7 +98,7 @@ methods
 	end
 	
 	function x=get.Volume(obj)
-		x=obj.Radius^3;
+		x=pi*obj.Radius^2*obj.Height;
 	end
 end
 
