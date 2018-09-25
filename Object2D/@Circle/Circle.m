@@ -94,4 +94,9 @@ methods
 	G=GCF(obj,x,y,z)
 end
 
+methods (Static=true)
+	Gr=GCFr(R,r,z)
+	Gz=GCFz(R,r,z)
+end
+
 end
