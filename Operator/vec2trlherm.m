@@ -20,9 +20,7 @@ function H=vec2trlherm(v)
 % Last modified: 26/06/2017
 
 if iscomplexvector(v)
-	n=numel(v);
-	n=roots([1,-1,-2*n]);
-	n=max(n);
+	n=max(roots([1,-1,-2*numel(v)]));
 	if floor(n)>=n
 		H=zeros(n);
 		k=0;
