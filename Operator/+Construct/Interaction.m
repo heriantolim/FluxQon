@@ -157,53 +157,102 @@ while j<=J
 	f2=true;
 	switch c1
 		case 'Ion'
+			M=numel(obj1.Multiplet);
+			MD=(2*obj1.ElectronSpin+1)*(2*obj1.NuclearSpin+1);
+			LD=M*MD;
 			switch c2
 				case 'Qubit'
 					g=Constant.ReducedPlanck*obj1.CouplingStrength;
-					s='coupling strength';
+					assert(numel(g)==M*MD*(MD-1)/2,...
+						'FluxQon:Construct:Interaction:InvalidParam',...
+						'Incorrect number of elements in the coupling strength.');
+					if rwa
+						i=0;
+						for Mi=1:M
+							for Ji=1:MD
+								for Jj=(Ji+1):MD
+									i=i+1;
+									H=H+g(i)*Operator.kron(d,...
+											n1,obj1.Transition(Ji,Mi,Jj,Mi),...
+											n2,obj2.Creation) ...
+										+g(i)*Operator.kron(d,...
+											n1,obj1.Transition(Jj,Mi,Ji,Mi),...
+											n2,obj2.Annihilation);
+								end
+							end
+						end
+					else
+						E1=obj1.Energy;
+						if isa(obj1,'Cylinder') && isa(obj2,'Circle')
+							k=integral2(@(r,z)(Circle.GCFr(obj2.Radius,r,z)).^2.*r,...
+								0,obj1.Radius,0,obj1.Height);
+							k=sqrt(k/obj1.Height)/obj1.Radius;
+							k=k*Constant.VacuumPermeability*obj2.TunnelingEnergy ...
+								/4/Constant.FluxQuantum;
+							k=k*(E1-E1(1)-kron(obj1.MultipletEnergy,[1;1]));
+						else
+							error('FluxQon:Construct:Interaction:UnexpectedCase',...
+								['The XZ coupling strength between the qubit and ',...
+									'the ions could not be determined.']);
+						end
+						for Li=2:LD
+							H=H+k(Li)*Operator.kron(d,...
+								n1,obj1.Number(Li),...
+								n2,obj2.Creation+obj2.Annihilation);
+						end
+						i=0;
+						for Mi=1:M
+							for Ji=1:MD
+								for Jj=(Ji+1):MD
+									i=i+1;
+									H=H+g(i)*Operator.kron(d,...
+											n1,obj1.Transition(Ji,Mi,Jj,Mi) ...
+												+obj1.Transition(Jj,Mi,Ji,Mi),...
+											n2,obj2.Creation+obj2.Annihilation);
+								end
+							end
+						end
+					end
 				case 'Photon'
 					g=Constant.ReducedPlanck*obj1.LineStrength;
-					s='line strength';
+					K=size(g,1);
+					if K==1
+						g=g*ones(LD);
+					elseif K~=LD
+						error('FluxQon:Construct:Interaction:InvalidCase',...
+							['The matrix dimension of the ion''s line strength is ',...
+								'expected to be equal to the number of the ion''s ',...
+								'energy levels.']);
+					end
+					E1=obj1.Energy;
+					E2=obj2.Energy;
+					if rwa
+						for Li=1:LD
+							for Lj=(Li+1):LD
+								K=abs(E1(Li)-E1(Lj));
+								if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+									H=H+g(Li,Lj)*Operator.kron(d,...
+											n1,obj1.Transition(Li,Lj),n2,obj2.Creation) ...
+										+g(Lj,Li)*Operator.kron(d,...
+											n1,obj1.Transition(Lj,Li),n2,obj2.Annihilation);
+								end
+							end
+						end
+					else
+						g=abs(g);
+						for Li=1:LD
+							for Lj=(Li+1):LD
+								K=abs(E1(Li)-E1(Lj));
+								if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
+									H=H+g(Li,Lj)*Operator.kron(d,...
+										n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
+										n2,obj2.Annihilation+obj2.Creation);
+								end
+							end
+						end
+					end
 				otherwise
 					f2=false;
-			end
-			if f2
-				LD=obj1.NumLevels;
-				K=size(g,1);
-				if K==1
-					g=g*ones(LD);
-				elseif K~=LD
-					error('FluxQon:Construct:Interaction:InvalidCase',...
-						['The matrix dimension of the ion''s %s is expected to ',...
-							'be equal to the number of the ion''s energy levels.'],s);
-				end
-				E1=obj1.Energy;
-				E2=obj2.Energy;
-				if rwa
-					for Li=1:LD
-						for Lj=(Li+1):LD
-							K=abs(E1(Li)-E1(Lj));
-							if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
-								H=H+g(Li,Lj)*Operator.kron(d,...
-										n1,obj1.Transition(Li,Lj),n2,obj2.Creation) ...
-									+g(Lj,Li)*Operator.kron(d,...
-										n1,obj1.Transition(Lj,Li),n2,obj2.Annihilation);
-							end
-						end
-					end
-				else
-					g=abs(g);
-					for Li=1:LD
-						for Lj=(Li+1):LD
-							K=abs(E1(Li)-E1(Lj));
-							if abs(K-E2)/min(K,E2)<=DISPERSION_IGNORE
-								H=H+g(Li,Lj)*Operator.kron(d,...
-									n1,obj1.Transition(Li,Lj)+obj1.Transition(Lj,Li),...
-									n2,obj2.Annihilation+obj2.Creation);
-							end
-						end
-					end
-				end
 			end
 		case 'Qubit'
 			switch c2
@@ -212,12 +261,12 @@ while j<=J
 					E2=obj2.Energy;
 					if abs(E1-E2)/min(E1,E2)<=DISPERSION_IGNORE
 						if isa(obj1,'FluxQubit')
-							g=pi/Constant.FluxQuantum*obj1.TunnelingEnergy ...
-								*obj1.Area*obj2.MagneticAmplitude;
+							g=pi*obj1.Area*obj1.TunnelingEnergy ...
+								/Constant.FluxQuantum*obj2.MagneticAmplitude;
 						else
 							error('FluxQon:Construct:Interaction:UnexpectedCase',...
-								['The interaction strength between the qubit ',...
-									'and the photon could not be determined.']);
+								['The coupling strength between the qubit and ',...
+									'the photon could not be determined.']);
 						end
 						if rwa
 							g=abs(g);
