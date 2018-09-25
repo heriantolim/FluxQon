@@ -190,7 +190,7 @@ for n=1:N
 	end
 end
 
-% Radiation spectrum.
+% Fourier transform.
 N=2^nextpow2(N);
 F=0:2*fMax/N:fMax;
 S=fft(S,N);

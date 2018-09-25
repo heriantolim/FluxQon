@@ -140,8 +140,9 @@ else
 	T=zeros(HD,HD,L1,L2);
 	B1=Creation(FD);
 	B2=Annihilation(FD);
+	B3=Number(FD);
+	i=1; j=1;
 	if LU1(1)==0 || LU2(1)==0
-		B3=Number(FD);
 		T(:,:,1,1)=obj.NumIons*eye(HD);
 		for Li=1:LD
 			T(:,:,1,1)=T(:,:,1,1)-Operator.kron(d,Li,B3);
@@ -158,8 +159,6 @@ else
 				T(:,:,1,1)=sqrt(T(:,:,1,1))*Operator.kron(d,LU2(1),B2);
 			end
 			i=2;
-		else
-			i=1;
 		end
 		if LU2(1)==0
 			if L1>1
@@ -173,16 +172,14 @@ else
 				T(:,:,1,1)=Operator.kron(d,LU1(1),B1)*sqrt(T(:,:,1,1));
 			end
 			j=2;
-		else
-			j=1;
 		end
-		for Li=i:L1
-			for Lj=j:L2
-				if LU1(Li)==LU2(Lj)
-					T(:,:,Li,Lj)=Operator.kron(d,LU1(Li),B3);
-				else
-					T(:,:,Li,Lj)=Operator.kron(d,LU1(Li),B1,LU2(Lj),B2);
-				end
+	end
+	for Li=i:L1
+		for Lj=j:L2
+			if LU1(Li)==LU2(Lj)
+				T(:,:,Li,Lj)=Operator.kron(d,LU1(Li),B3);
+			else
+				T(:,:,Li,Lj)=Operator.kron(d,LU1(Li),B1,LU2(Lj),B2);
 			end
 		end
 	end

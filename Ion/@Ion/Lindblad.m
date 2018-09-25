@@ -120,18 +120,20 @@ if b=='F' && obj.NumIons>1
 		end
 	end
 else
-	if isvector(y)
-		y=vec2symm(y);
-	end
-	K=size(y,1);
-	if K==1
+	if isscalar(y)
 		y=y*ones(LD);
-	elseif K==M
-		y=kron(y,ones(MD));
-	elseif K~=LD
-		error('FluxQon:Ion:Lindblad:InvalidCase',...
-			['The matrix dimension of the decay rate is expected to be ',...
-				'equal to the number of multiplets or energy levels.']);
+	else
+		if isvector(y)
+			y=vec2symm(y);
+		end
+		K=size(y,1);
+		if K==M
+			y=kron(y,ones(MD));
+		elseif K~=LD
+			error('FluxQon:Ion:Lindblad:InvalidCase',...
+				['The matrix dimension of the decay rate is expected to be ',...
+					'equal to the number of multiplets or energy levels.']);
+		end
 	end
 
 	K=obj.Temperature;

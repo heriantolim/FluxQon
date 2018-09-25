@@ -27,7 +27,7 @@ if nargin==0
 end
 
 if isintegervector(varargin{1})
-	M=prod(varargin{1});
+	M=prod(varargin{1})^2;
 else
 	M=prod(Hilbert.dimension(varargin{:}))^2;
 end

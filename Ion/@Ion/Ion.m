@@ -60,6 +60,7 @@ end
 
 properties (Dependent=true, SetAccess=private)
 	Frequency
+	MultipletFrequency
 	NumLevels
 	HilbertDimension
 end
@@ -286,6 +287,10 @@ methods
 	function x=get.Frequency(obj)
 		x=obj.Energy/Constant.ReducedPlanck;
 	end
+	
+	function x=get.MultipletFrequency(obj)
+		x=obj.MultipletEnergy/Constant.ReducedPlanck;
+	end
 
 	function x=get.NumLevels(obj)
 		x=(2*obj.ElectronSpin+1)*(2*obj.NuclearSpin+1)*numel(obj.Multiplet);
@@ -415,13 +420,9 @@ methods (Access=protected)
 	end
 
 	function x=setCouplingStrength(~,x)
-		if iscomplexvector(x)
-			x=vec2trlherm(x);
-		elseif isempty(x) || ~ishermitian(x)
-			error('FluxQon:Ion:setCouplingStrength:InvalidInput',...
-				['Input to set the coupling strength must be either ',...
-					'a complex vector or a hermitian matrix.']);
-		end
+		assert(isrealvector(x),...
+			'FluxQon:Ion:setCouplingStrength:InvalidInput',...
+			'Input to set the coupling strength must be a real vector.');
 	end
 
 	function x=getLineStrength(~,x)

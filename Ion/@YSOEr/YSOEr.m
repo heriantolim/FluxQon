@@ -7,11 +7,11 @@ classdef YSOEr < YSO & Er
 %  22.95% chance being odd, and the rest being even. The site and class have a
 %  50:50 chance of being 1 or 2.
 %
-%  obj=Er(1), obj=Er('odd') creates an YSOEr object with an odd isotope, a
+%  obj=YSOEr(1), obj=YSOEr('odd') creates an YSOEr object with an odd isotope, a
 %  random site and a random class.
 %
-%  obj=Er(2), obj=Er('even') creates an YSOEr object with an even isotope, a
-%  random site and a random class.
+%  obj=YSOEr(2), obj=YSOEr('even') creates an YSOEr object with an even isotope,
+%  a random site and a random class.
 %
 %  obj=YSOEr([a,b,c])
 %
@@ -197,9 +197,9 @@ methods (Access=protected)
 			if MV(Mi)==2
 				switch obj.Site
 					case 1
-						x(Mi)=1.292857e-19;
+						x(Mi)=Constant.Planck*1.9511671e14;
 					case 2
-						x(Mi)=1.290819e-19;
+						x(Mi)=Constant.Planck*1.9480915e14;
 				end
 			end
 		end
