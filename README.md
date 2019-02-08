@@ -4,7 +4,7 @@ This repository contains the core classes and functions I wrote to produce the s
 ## Academic Use
 If you use any of the materials in this repository, please consider citing my PhD thesis:
 
-> Lim, H. (2017). *Erbium for optical modulation and quantum computation*. University of Melbourne. Retrieved from <http://hdl.handle.net/11343/220532>.
+> Lim, H. (2017). *Erbium for optical modulation and quantum computation*. PhD thesis, School of Physics, The University of Melbourne. Retrieved from <http://hdl.handle.net/11343/220532>.
 
 ## Licensing
 This software is licensed under the GNU General Public License (version 3).
