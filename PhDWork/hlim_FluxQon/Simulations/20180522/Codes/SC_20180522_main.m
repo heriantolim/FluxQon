@@ -1,0 +1,9 @@
+% MATLAB R2018a
+addpackage('MatCommon_v1.0.0',...
+	'MatGraphics_v1.0.0',...
+	'PhysConst_v1.0.0',...
+	'FluxQon_v1.0.0');
+
+runfunction({'compute','ion','dynamics'},0,0,1,1e8,.01,'TimeSpan',0:5e-10:5e-7);
+runfunction({'compute','ion','dynamics'},0,0,1,1e13,.01,'TimeSpan',0:1e-13:1e-10);
+runfunction({'plot','ion','dynamics',1});
